@@ -3,6 +3,7 @@ package com.gstech.reservationSystem.controllers;
 import com.gstech.reservationSystem.DTO.ResponseDTO;
 import com.gstech.reservationSystem.DTO.UserRegistrationDTO;
 import com.gstech.reservationSystem.services.RegisterService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -18,12 +19,9 @@ public class RegisterController {
     private RegisterService registerService;
 
     @PostMapping
-    public ResponseEntity<ResponseDTO> register(@RequestBody UserRegistrationDTO data) {
+    public ResponseEntity<ResponseDTO> register(@RequestBody @Valid UserRegistrationDTO data) {
 
-        if(registerService.registerUser(data)) {
-
-            return ResponseEntity.ok(new ResponseDTO("User registered successfully"));
-
-        } return ResponseEntity.badRequest().body(new ResponseDTO("User registration failed"));
+        registerService.registerUser(data);
+        return ResponseEntity.ok(new ResponseDTO("User registered successfully"));
     }
 }

@@ -1,6 +1,11 @@
 package com.gstech.reservationSystem.DTO;
 
-import com.gstech.reservationSystem.enums.UserRole;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
 
-public record UserRegistrationDTO(String name, String email, String password, UserRole role) {
-}
+public record UserRegistrationDTO(
+        @NotBlank String name,
+        @Email String email,
+        @Size(min=6) String password
+) {}
