@@ -23,6 +23,7 @@ public class Reservation {
 
     private LocalDateTime reservationDate;
 
+    @Enumerated(EnumType.STRING)
     private ReservationStatus reservationStatus;
 
     public Reservation(User user, RestaurantTable table, LocalDateTime reservationDate, ReservationStatus reservationStatus) {

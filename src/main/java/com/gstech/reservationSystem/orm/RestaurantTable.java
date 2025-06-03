@@ -6,7 +6,7 @@ import jakarta.persistence.*;
 import java.util.List;
 
 @Entity
-@Table(name = "tb_restaurantTable")
+@Table(name = "tb_restaurant_table")
 public class RestaurantTable {
 
     @Id
@@ -14,6 +14,7 @@ public class RestaurantTable {
     private Long id;
     private String name;
     private int capacity;
+    @Enumerated(EnumType.STRING)
     private TableStatus status;
 
     @OneToMany(mappedBy = "table", cascade = CascadeType.ALL)
