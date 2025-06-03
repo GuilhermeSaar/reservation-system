@@ -1,4 +1,4 @@
-# Sistema de Reservas para Restaurante
+# Sistema de Reservas para Restaurante (em desenvolvimento)
 
 ## Descrição do Projeto
 
