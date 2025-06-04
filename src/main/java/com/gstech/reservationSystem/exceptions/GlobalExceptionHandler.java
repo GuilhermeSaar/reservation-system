@@ -14,6 +14,11 @@ public class GlobalExceptionHandler {
         return ResponseEntity.badRequest().body(new ResponseDTO(e.getMessage()));
     }
 
+    @ExceptionHandler(TableNameAlreadyExistsException.class)
+    public ResponseEntity<ResponseDTO> handleTableAlreadyExists(EmailAlreadyExistsException e) {
+        return ResponseEntity.badRequest().body(new ResponseDTO(e.getMessage()));
+    }
+
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ResponseDTO> handleGenericException(Exception ex) {
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)

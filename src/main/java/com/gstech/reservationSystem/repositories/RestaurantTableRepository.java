@@ -15,4 +15,6 @@ public interface RestaurantTableRepository extends JpaRepository<RestaurantTable
     @Query(value = "SELECT *FROM tb_restaurant_table " +
             "WHERE status = 'AVAILABLE'", nativeQuery = true)
     List<RestaurantTable> allAvailableTables();
+
+    Optional<RestaurantTable> findByName(String name);
 }

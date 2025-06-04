@@ -1,12 +1,11 @@
 package com.gstech.reservationSystem.controllers;
 
+import com.gstech.reservationSystem.DTO.ResponseDTO;
 import com.gstech.reservationSystem.DTO.RestaurantTableDTO;
 import com.gstech.reservationSystem.services.RestaurantTableService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -17,11 +16,18 @@ public class RestaurantTableController {
     @Autowired
     private RestaurantTableService restaurantTableService;
 
-    @GetMapping()
+    @GetMapping(value = "/available")
     public ResponseEntity<List<RestaurantTableDTO>> getAllAvailableRestaurantTables() {
 
         List<RestaurantTableDTO> tables = restaurantTableService.findAllTablesAvailable();
         return ResponseEntity.ok().body(tables);
     }
 
+    @PostMapping(value = "/new")
+    public ResponseEntity<ResponseDTO> createRestaurantTable(@RequestBody RestaurantTableDTO data) {
+
+        restaurantTableService.createNewTable(data);
+        return ResponseEntity.ok().body(new ResponseDTO("Data has been created successfully"));
+    }
 }
+
