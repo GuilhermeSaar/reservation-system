@@ -36,17 +36,17 @@ public class JWTAuthenticationFilter extends OncePerRequestFilter {
         var token = this.recoveryToken(request);
 
         if(token != null) {
-            var email = this.jwtService.validateToken(token);
+            var optionalEmail = this.jwtService.validateToken(token);
 
-            if(email != null) {
-                var optional = this.userRepository.findByEmail(String.valueOf(email));
+            if(optionalEmail.isPresent()) {
+                var email = optionalEmail.get();
+                var optionalUser = userRepository.findByEmail(email);
 
-                if(optional.isPresent()) {
-                    var user = optional.get();
+                if(optionalUser.isPresent()) {
+                    var user = optionalUser.get();
 
-                    var authentication = new UsernamePasswordAuthenticationToken(user.getEmail(),
+                    var authentication = new UsernamePasswordAuthenticationToken(user,
                             null, user.getAuthorities());
-
                     SecurityContextHolder.getContext().setAuthentication(authentication);
                 }
             }

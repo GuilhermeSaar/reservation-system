@@ -28,9 +28,14 @@ public class SecurityConfiguration {
                 .headers(x -> x.frameOptions().disable())
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(authorize -> authorize
+                        .requestMatchers(HttpMethod.POST, "/auth").permitAll()
                         .requestMatchers(HttpMethod.POST, "/register").permitAll()
-                .anyRequest().permitAll())
+                        .requestMatchers(HttpMethod.POST, "/reservations").authenticated()
+                        .anyRequest().permitAll())
+
+
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
+
         return http.build();
     }
 

@@ -36,8 +36,6 @@ public class Reservation {
     public Reservation() {
     }
 
-
-
     public User getUser() {
         return user;
     }

@@ -15,7 +15,12 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(TableNameAlreadyExistsException.class)
-    public ResponseEntity<ResponseDTO> handleTableAlreadyExists(EmailAlreadyExistsException e) {
+    public ResponseEntity<ResponseDTO> handleTableAlreadyExists(TableNameAlreadyExistsException e) {
+        return ResponseEntity.badRequest().body(new ResponseDTO(e.getMessage()));
+    }
+
+    @ExceptionHandler(TableNotAvailableException.class)
+    public ResponseEntity<ResponseDTO> handleTableNotAvailable(TableNotAvailableException e) {
         return ResponseEntity.badRequest().body(new ResponseDTO(e.getMessage()));
     }
 
