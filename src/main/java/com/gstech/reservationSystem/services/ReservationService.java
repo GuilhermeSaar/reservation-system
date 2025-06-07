@@ -13,6 +13,8 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Objects;
+
 @Service
 public class ReservationService {
 
@@ -49,4 +51,24 @@ public class ReservationService {
         tableRepository.save(table);
     }
 
+    @Transactional
+    public void cancelReservation(Long reservationId, String userEmail) {
+
+        var user = userRepository.findByEmail(userEmail)
+                .orElseThrow(() -> new UsernameNotFoundException("User not found with email: " + userEmail));
+
+        var reservation = reservationRepository.findById(reservationId).orElseThrow(
+                () -> new RuntimeException("Reservation not found"));
+
+        if(!Objects.equals(user.getId(), reservation.getUser().getId())) {
+            throw new UsernameNotFoundException(
+                    "user is not authorized to cancel the reservation");
+        }
+
+        if (reservation.getReservationStatus().equals(ReservationStatus.CANCELED)) {
+            throw new RuntimeException("Reservation has already been canceled");
+        }
+        reservation.setReservationStatus(ReservationStatus.CANCELED);
+        reservationRepository.save(reservation);
+    }
 }

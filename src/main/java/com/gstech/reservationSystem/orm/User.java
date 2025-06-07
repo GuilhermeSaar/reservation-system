@@ -40,7 +40,7 @@ public class User implements UserDetails {
         this.name = data.name();
         this.email = data.email();
         this.password = encryptedPassword;
-        this.role = UserRole.ADMIN;
+        this.role = UserRole.CUSTOMER;
     }
 
     public Long getId() {
