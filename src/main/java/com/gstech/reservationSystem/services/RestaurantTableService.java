@@ -27,23 +27,31 @@ public class RestaurantTableService {
     @Transactional(readOnly = true)
     public List<RestaurantTableDTO> findAllTablesAvailable() {
 
-        List<RestaurantTable> listAvailable = restaurantTableRepository.allAvailableTables();
+        List<RestaurantTable> listTables = restaurantTableRepository.findAllTablesNotInactive();
 
-        return listAvailable.stream()
+        return listTables.stream()
                 .map(table -> new RestaurantTableDTO(
                         table.getId(),
                         table.getName(),
-                        table.getCapacity()
+                        table.getCapacity(),
+                        table.getStatus()
                 ))
                 .collect(Collectors.toList());
     }
 
     @Transactional
-    public void createNewTable(RestaurantTableDTO data) {
+    public void createNewTable(RestaurantTableDTO data, String userEmail) {
+
+        var user = userRepository.findByEmail(userEmail).orElseThrow(
+                () -> new UsernameNotFoundException("User not found with email: " + userEmail)
+        );
 
         if(restaurantTableRepository.findByName(data.name()).isPresent()) {
-
             throw new TableNameAlreadyExistsException("The table name is already taken.");
+        }
+
+        if(!user.getRole().equals(UserRole.ADMIN)) {
+            throw new RuntimeException("Only admins can create a table");
         }
 
         var table = new RestaurantTable();
@@ -72,6 +80,29 @@ public class RestaurantTableService {
             throw new RuntimeException("Only admins can delete a table");
         }
         table.setStatus(TableStatus.INACTIVE);
+        restaurantTableRepository.save(table);
+    }
+
+
+    @Transactional
+    public void updateTable(Long id, String userEmail) {
+
+        var user = userRepository.findByEmail(userEmail)
+                .orElseThrow(() -> new UsernameNotFoundException("User not found with email: " + userEmail));
+
+        if(!user.getRole().equals(UserRole.ADMIN)) {
+            throw new RuntimeException("Only admins can delete a table");
+        }
+
+        var table = restaurantTableRepository.findById(id).orElseThrow(
+                () -> new TableNotFoundException("Table Not Found with id: " + id)
+        );
+
+        if (table.getStatus().equals(TableStatus.RESERVED)) {
+            throw new RuntimeException("Reserved tables cannot be processed");
+        }
+
+        table.setStatus(TableStatus.AVAILABLE);
         restaurantTableRepository.save(table);
     }
 }

@@ -4,5 +4,6 @@ import java.time.LocalDateTime;
 
 public record CreateReservationDTO(
         Long tableId,
-        LocalDateTime dateTime
+        LocalDateTime dateTime,
+        int guestCount
 ) {}

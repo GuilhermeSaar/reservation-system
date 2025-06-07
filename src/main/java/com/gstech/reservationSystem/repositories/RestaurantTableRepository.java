@@ -16,8 +16,8 @@ public interface RestaurantTableRepository extends JpaRepository<RestaurantTable
     List<RestaurantTable> allAvailableTables();
 
     @Query(value = "SELECT *FROM tb_restaurant_table " +
-            "WHERE status <> 'DEACTIVATED'", nativeQuery = true)
-    List<RestaurantTable> findAllTablesNotDeactivated();
+            "WHERE status <> 'INACTIVE'", nativeQuery = true)
+    List<RestaurantTable> findAllTablesNotInactive();
 
     Optional<RestaurantTable> findByName(String name);
     Optional<RestaurantTable> findById(Long id);

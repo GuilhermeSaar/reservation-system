@@ -18,7 +18,7 @@ public class RestaurantTableController {
     @Autowired
     private RestaurantTableService restaurantTableService;
 
-    @GetMapping(value = "/available")
+    @GetMapping()
     public ResponseEntity<List<RestaurantTableDTO>> getAllAvailableRestaurantTables() {
 
         List<RestaurantTableDTO> tables = restaurantTableService.findAllTablesAvailable();
@@ -26,17 +26,25 @@ public class RestaurantTableController {
     }
 
     @PostMapping(value = "/new")
-    public ResponseEntity<ResponseDTO> createRestaurantTable(@RequestBody RestaurantTableDTO data) {
+    public ResponseEntity<ResponseDTO> createRestaurantTable(@RequestBody RestaurantTableDTO data,
+                                                             @AuthenticationPrincipal UserDetails user) {
 
-        restaurantTableService.createNewTable(data);
+        restaurantTableService.createNewTable(data, user.getUsername());
         return ResponseEntity.ok().body(new ResponseDTO("Data has been created successfully"));
     }
 
     @PutMapping(value = "/delete/{id}")
-    public ResponseEntity<ResponseDTO> updateRestaurantTable(@PathVariable Long id, @AuthenticationPrincipal UserDetails user) {
+    public ResponseEntity<ResponseDTO> deleteRestaurantTable(@PathVariable Long id, @AuthenticationPrincipal UserDetails user) {
 
         restaurantTableService.deleteTable(id, user.getUsername());
         return ResponseEntity.ok().body(new ResponseDTO("Data has been deleted successfully"));
+    }
+
+    @PutMapping(value = "/update/{id}")
+    public ResponseEntity<ResponseDTO> updateRestaurantTable(@PathVariable Long id, @AuthenticationPrincipal UserDetails user) {
+
+        restaurantTableService.updateTable(id, user.getUsername());
+        return ResponseEntity.ok().body(new ResponseDTO("Data has been update successfully"));
     }
 
 }

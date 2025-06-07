@@ -38,6 +38,11 @@ public class ReservationService {
             throw new TableNotAvailableException("Table is not available");
         }
 
+        if (data.guestCount() > table.getCapacity()) {
+
+            throw new RuntimeException("Number of guests exceeds table capacity");
+        }
+
         var reservation = new Reservation();
         reservation.setUser(user);
         reservation.setTable(table);
