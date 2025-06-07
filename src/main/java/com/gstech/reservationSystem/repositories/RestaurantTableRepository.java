@@ -11,9 +11,7 @@ import java.util.Optional;
 @Repository
 public interface RestaurantTableRepository extends JpaRepository<RestaurantTable, Long> {
 
-    @Query(value = "SELECT *FROM tb_restaurant_table " +
-            "WHERE status = 'AVAILABLE'", nativeQuery = true)
-    List<RestaurantTable> allAvailableTables();
+
 
     @Query(value = "SELECT *FROM tb_restaurant_table " +
             "WHERE status <> 'INACTIVE'", nativeQuery = true)

@@ -1,6 +1,7 @@
 package com.gstech.reservationSystem.services;
 
 import com.gstech.reservationSystem.DTO.CreateReservationDTO;
+import com.gstech.reservationSystem.DTO.ReservationDTO;
 import com.gstech.reservationSystem.enums.ReservationStatus;
 import com.gstech.reservationSystem.enums.TableStatus;
 import com.gstech.reservationSystem.exceptions.TableNotAvailableException;
@@ -13,7 +14,9 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 @Service
 public class ReservationService {
@@ -24,6 +27,22 @@ public class ReservationService {
     private UserRepository userRepository;
     @Autowired
     private RestaurantTableRepository tableRepository;
+
+    @Transactional(readOnly = true)
+    public List<ReservationDTO> findAll(String userEmail) {
+
+        var user = userRepository.findByEmail(userEmail).orElseThrow(
+                () -> new UsernameNotFoundException("User not found with email: " + userEmail));
+
+        List<Reservation> reservations = reservationRepository.findAllByUserId(user.getId());
+
+        return reservations.stream()
+                .map(reservation -> new ReservationDTO(
+                        reservation.getReservationDate(),
+                        reservation.getReservationStatus()
+                ))
+                .collect(Collectors.toList());
+    }
 
     @Transactional
     public void createReservation(CreateReservationDTO data, String userEmail) {

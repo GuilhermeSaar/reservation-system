@@ -25,7 +25,7 @@ public class RestaurantTableService {
     private UserRepository userRepository;
 
     @Transactional(readOnly = true)
-    public List<RestaurantTableDTO> findAllTablesAvailable() {
+    public List<RestaurantTableDTO> findAllTables() {
 
         List<RestaurantTable> listTables = restaurantTableRepository.findAllTablesNotInactive();
 
