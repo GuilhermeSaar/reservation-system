@@ -25,7 +25,6 @@ public class ReservationService {
     @Autowired
     private RestaurantTableRepository tableRepository;
 
-
     @Transactional
     public void createReservation(CreateReservationDTO data, String userEmail) {
 
@@ -45,10 +44,10 @@ public class ReservationService {
         reservation.setReservationDate(data.dateTime());
         reservation.setReservationStatus(ReservationStatus.ACTIVE);
 
-        reservationRepository.save(reservation);
-
         table.setStatus(TableStatus.RESERVED);
         tableRepository.save(table);
+
+        reservationRepository.save(reservation);
     }
 
     @Transactional
@@ -70,5 +69,9 @@ public class ReservationService {
         }
         reservation.setReservationStatus(ReservationStatus.CANCELED);
         reservationRepository.save(reservation);
+
+        var table = reservation.getTable();
+        table.setStatus(TableStatus.AVAILABLE);
+        tableRepository.save(table);
     }
 }

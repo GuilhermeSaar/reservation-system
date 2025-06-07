@@ -1,7 +1,6 @@
 package com.gstech.reservationSystem.repositories;
 
 import com.gstech.reservationSystem.orm.RestaurantTable;
-import com.gstech.reservationSystem.orm.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
@@ -15,6 +14,10 @@ public interface RestaurantTableRepository extends JpaRepository<RestaurantTable
     @Query(value = "SELECT *FROM tb_restaurant_table " +
             "WHERE status = 'AVAILABLE'", nativeQuery = true)
     List<RestaurantTable> allAvailableTables();
+
+    @Query(value = "SELECT *FROM tb_restaurant_table " +
+            "WHERE status <> 'DEACTIVATED'", nativeQuery = true)
+    List<RestaurantTable> findAllTablesNotDeactivated();
 
     Optional<RestaurantTable> findByName(String name);
     Optional<RestaurantTable> findById(Long id);
