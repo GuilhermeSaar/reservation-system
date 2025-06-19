@@ -3,6 +3,7 @@ package com.gstech.reservationSystem.controllers;
 import com.gstech.reservationSystem.DTO.ResponseDTO;
 import com.gstech.reservationSystem.DTO.RestaurantTableDTO;
 import com.gstech.reservationSystem.services.RestaurantTableService;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -31,7 +32,7 @@ public class RestaurantTableController {
     }
 
     @PostMapping(value = "/new")
-    @Operation(summary = "Criar nova mesa", description = "Cria uma nova mesa no restaurante.")
+    @Operation(summary = "Criar nova mesa", security = @SecurityRequirement(name = "bearerAuth"), description = "Cria uma nova mesa no restaurante.")
     public ResponseEntity<ResponseDTO> createRestaurantTable(@RequestBody RestaurantTableDTO data,
                                                              @Parameter(hidden = true) @AuthenticationPrincipal UserDetails user) {
 
@@ -40,7 +41,7 @@ public class RestaurantTableController {
     }
 
     @PutMapping(value = "/delete/{id}")
-    @Operation(summary = "Excluir mesa", description = "Remove uma mesa pelo ID.")
+    @Operation(summary = "Excluir mesa", security = @SecurityRequirement(name = "bearerAuth"), description = "Remove uma mesa pelo ID.")
     public ResponseEntity<ResponseDTO> deleteRestaurantTable(@PathVariable Long id,
                                                              @Parameter(hidden = true) @AuthenticationPrincipal UserDetails user) {
 
@@ -49,7 +50,7 @@ public class RestaurantTableController {
     }
 
     @PutMapping(value = "/update/{id}")
-    @Operation(summary = "Atualizar mesa", description = "Atualiza os dados de uma mesa existente.")
+    @Operation(summary = "Atualizar mesa", security = @SecurityRequirement(name = "bearerAuth"), description = "Atualiza os dados de uma mesa existente.")
     public ResponseEntity<ResponseDTO> updateRestaurantTable(@PathVariable Long id,
                                                              @Parameter(hidden = true) @AuthenticationPrincipal UserDetails user) {
 

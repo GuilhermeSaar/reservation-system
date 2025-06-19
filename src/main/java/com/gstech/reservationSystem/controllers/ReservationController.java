@@ -4,6 +4,7 @@ import com.gstech.reservationSystem.DTO.CreateReservationDTO;
 import com.gstech.reservationSystem.DTO.ReservationDTO;
 import com.gstech.reservationSystem.DTO.ResponseDTO;
 import com.gstech.reservationSystem.services.ReservationService;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -20,6 +21,7 @@ import io.swagger.v3.oas.annotations.Parameter;
 @RestController
 @RequestMapping(value = "/reservations")
 @Tag(name = "Reservas", description = "Gerenciamento de reservas de mesas")
+@SecurityRequirement(name = "bearerAuth")
 public class ReservationController {
 
     @Autowired
