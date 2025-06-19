@@ -14,6 +14,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalTime;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -57,8 +58,16 @@ public class ReservationService {
             throw new TableNotAvailableException("Table is not available");
         }
 
-        if (data.guestCount() > table.getCapacity()) {
+        //valida horario
+        LocalTime reservationTime = data.dateTime().toLocalTime();
+        LocalTime openingTime = LocalTime.of(10, 0);
+        LocalTime closingTime = LocalTime.of(22, 0);
 
+        if(reservationTime.isBefore(openingTime) || reservationTime.isAfter(closingTime)) {
+            throw new RuntimeException("Reservations are only allowed between 10:00 and 22:00");
+        }
+
+        if (data.guestCount() > table.getCapacity()) {
             throw new RuntimeException("Number of guests exceeds table capacity");
         }
 

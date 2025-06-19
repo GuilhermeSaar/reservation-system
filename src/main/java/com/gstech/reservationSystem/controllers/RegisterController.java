@@ -11,14 +11,19 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
+
 @RestController
 @RequestMapping(value = "/register")
+@Tag(name = "Registro", description = "Registro de novos usuários")
 public class RegisterController {
 
     @Autowired
     private RegisterService registerService;
 
     @PostMapping
+    @Operation(summary = "Registrar novo usuário", description = "Cria um novo usuário no sistema.")
     public ResponseEntity<ResponseDTO> register(@RequestBody @Valid UserRegistrationDTO data) {
 
         registerService.registerUser(data);
