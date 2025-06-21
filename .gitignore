@@ -36,3 +36,6 @@ build/
 application-prod.properties
 application-test.properties
 application-dev.properties
+
+### Ignora aruivo .env
+.env
