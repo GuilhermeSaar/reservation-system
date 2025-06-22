@@ -47,12 +47,12 @@ public class TableService {
                 () -> new UsernameNotFoundException("Usuário não encontrado")
         );
 
-        if(tableRepository.findByName(data.name()).isPresent()) {
-            throw new ResourceAlreadyExistsException("Mesa já existente");
-        }
-
         if(!user.getRole().equals(UserRole.ADMIN)) {
             throw new UserNotAllowedException("Usuário sem permissão");
+        }
+
+        if(tableRepository.findByName(data.name()).isPresent()) {
+            throw new ResourceAlreadyExistsException("Mesa já existente");
         }
 
         var table = new RestaurantTable();
@@ -69,16 +69,16 @@ public class TableService {
         var user = userRepository.findByEmail(userEmail)
                 .orElseThrow(() -> new UsernameNotFoundException("Usuário não encontrado"));
 
+        if(!user.getRole().equals(UserRole.ADMIN)) {
+            throw new UserNotAllowedException("Usuário sem permissão");
+        }
+
         var table = tableRepository.findById(id).orElseThrow(
                 () -> new ResourceNotFoundException("Mesa não encontrada")
         );
 
         if(!table.getStatus().equals(TableStatus.INACTIVE)) {
             throw new ActionNotAllowedException("Apenas mesas inativas podem ser excluidas");
-        }
-
-        if(!user.getRole().equals(UserRole.ADMIN)) {
-            throw new UserNotAllowedException("Usuário sem permissão");
         }
 
         tableRepository.delete(table);
