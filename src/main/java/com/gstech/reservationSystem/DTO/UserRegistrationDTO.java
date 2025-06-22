@@ -14,6 +14,6 @@ public record UserRegistrationDTO(
         String email,
 
         @NotBlank(message = "Campo obrigatório")
-        @Size(min = 6, message = "A senha deve ter no mínimo 6 caracteres")
+        //@Size(min = 6, message = "A senha deve ter no mínimo 6 caracteres")
         String password
 ) {}

@@ -9,12 +9,13 @@ import java.util.List;
 import java.util.Optional;
 
 @Repository
-public interface RestaurantTableRepository extends JpaRepository<RestaurantTable, Long> {
+public interface TableRepository extends JpaRepository<RestaurantTable, Long> {
 
 
 
     @Query(value = "SELECT *FROM tb_restaurant_table " +
-            "WHERE status <> 'INACTIVE'", nativeQuery = true)
+            "WHERE status <> 'INACTIVE'" +
+            "ORDER BY id ASC", nativeQuery = true)
     List<RestaurantTable> findAllTablesNotInactive();
 
     Optional<RestaurantTable> findByName(String name);

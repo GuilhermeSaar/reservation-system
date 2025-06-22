@@ -9,6 +9,7 @@ import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.AuthenticationCredentialsNotFoundException;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
@@ -28,9 +29,13 @@ public class ReservationController {
     private ReservationService reservationService;
 
     @GetMapping
-    @Operation(summary = "Listar reservas", description = "Retorna todas as reservas do usuário logado.")
+    @Operation(summary = "Listar reservas (CUSTOMER)", description = "Retorna todas as reservas do usuário logado.")
     public ResponseEntity<List<ReservationDTO>> findReservations(
             @Parameter(hidden = true) @AuthenticationPrincipal UserDetails user) {
+
+        if (user == null) {
+            throw new AuthenticationCredentialsNotFoundException("Usuário não autenticado!");
+        }
 
         List<ReservationDTO> reservations = reservationService.findAll(user.getUsername());
         return ResponseEntity.status(HttpStatus.OK).body(reservations);
@@ -40,15 +45,23 @@ public class ReservationController {
     @Operation(summary = "Criar reserva", description = "Cria uma nova reserva.")
     public ResponseEntity<ResponseDTO> createReservation(@RequestBody @Valid CreateReservationDTO data,
                                                   @Parameter(hidden = true) @AuthenticationPrincipal UserDetails user) {
+
+        if (user == null) {
+            throw new AuthenticationCredentialsNotFoundException("Usuário não autenticado!");
+        }
         reservationService.createReservation(data, user.getUsername());
-        return ResponseEntity.status(HttpStatus.CREATED).body(new ResponseDTO("reservation completed"));
+        return ResponseEntity.status(HttpStatus.CREATED).body(new ResponseDTO("Reserva efetuada!"));
     }
 
     @PutMapping(value = "/cancel/{id}")
     @Operation(summary = "Cancelar reserva", description = "Cancela uma reserva existente.")
     public ResponseEntity<ResponseDTO> cancelReservation(@PathVariable Long id,
                                                          @Parameter(hidden = true) @AuthenticationPrincipal UserDetails user) {
+
+        if (user == null) {
+            throw new AuthenticationCredentialsNotFoundException("Usuário não autenticado!");
+        }
         reservationService.cancelReservation(id, user.getUsername());
-        return ResponseEntity.status(HttpStatus.OK).body(new ResponseDTO("reservation cancelled"));
+        return ResponseEntity.status(HttpStatus.OK).body(new ResponseDTO("Reserva cancelada"));
     }
 }

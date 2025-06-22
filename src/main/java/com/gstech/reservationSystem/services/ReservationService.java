@@ -4,10 +4,10 @@ import com.gstech.reservationSystem.DTO.CreateReservationDTO;
 import com.gstech.reservationSystem.DTO.ReservationDTO;
 import com.gstech.reservationSystem.enums.ReservationStatus;
 import com.gstech.reservationSystem.enums.TableStatus;
-import com.gstech.reservationSystem.exceptions.TableNotAvailableException;
+import com.gstech.reservationSystem.exceptions.*;
 import com.gstech.reservationSystem.orm.Reservation;
 import com.gstech.reservationSystem.repositories.ReservationRepository;
-import com.gstech.reservationSystem.repositories.RestaurantTableRepository;
+import com.gstech.reservationSystem.repositories.TableRepository;
 import com.gstech.reservationSystem.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -27,13 +27,13 @@ public class ReservationService {
     @Autowired
     private UserRepository userRepository;
     @Autowired
-    private RestaurantTableRepository tableRepository;
+    private TableRepository tableRepository;
 
     @Transactional(readOnly = true)
     public List<ReservationDTO> findAll(String userEmail) {
 
         var user = userRepository.findByEmail(userEmail).orElseThrow(
-                () -> new UsernameNotFoundException("User not found with email: " + userEmail));
+                () -> new UsernameNotFoundException("Usuário não encontrado"));
 
         List<Reservation> reservations = reservationRepository.findAllByUserId(user.getId());
 
@@ -49,13 +49,13 @@ public class ReservationService {
     public void createReservation(CreateReservationDTO data, String userEmail) {
 
         var user = userRepository.findByEmail(userEmail)
-                .orElseThrow(() -> new UsernameNotFoundException("User not found with email: " + userEmail));
+                .orElseThrow(() -> new UsernameNotFoundException("Usuário não encontrado"));
 
         var table = tableRepository.findById(data.tableId())
-                .orElseThrow(() -> new RuntimeException("Table not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Mesa não encontrada"));
 
         if(!table.getStatus().equals(TableStatus.AVAILABLE)) {
-            throw new TableNotAvailableException("Table is not available");
+            throw new TableNotAvailableException("Mesa não disponível");
         }
 
         //valida horario
@@ -68,7 +68,7 @@ public class ReservationService {
         }
 
         if (data.guestCount() > table.getCapacity()) {
-            throw new RuntimeException("Number of guests exceeds table capacity");
+            throw new TableNotAvailableException("Mesa indisponível ou capacidade excedida");
         }
 
         var reservation = new Reservation();
@@ -87,18 +87,18 @@ public class ReservationService {
     public void cancelReservation(Long reservationId, String userEmail) {
 
         var user = userRepository.findByEmail(userEmail)
-                .orElseThrow(() -> new UsernameNotFoundException("User not found with email: " + userEmail));
+                .orElseThrow(() -> new UsernameNotFoundException("Usuário não encontrado"));
 
         var reservation = reservationRepository.findById(reservationId).orElseThrow(
-                () -> new RuntimeException("Reservation not found"));
+                () -> new ResourceNotFoundException("Reserva não encontrada"));
 
         if(!Objects.equals(user.getId(), reservation.getUser().getId())) {
-            throw new UsernameNotFoundException(
-                    "user is not authorized to cancel the reservation");
+            throw new UserNotAllowedException(
+                    "Usuário não está autorizado a desfazer essa reserva");
         }
 
         if (reservation.getReservationStatus().equals(ReservationStatus.CANCELED)) {
-            throw new RuntimeException("Reservation has already been canceled");
+            throw new ActionNotAllowedException("A reserva já foi cancelada");
         }
         reservation.setReservationStatus(ReservationStatus.CANCELED);
         reservationRepository.save(reservation);

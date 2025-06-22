@@ -1,5 +1,7 @@
 package com.gstech.reservationSystem.security;
 
+import com.gstech.reservationSystem.exceptions.CustomAuthenticationEntryPoint;
+import com.gstech.reservationSystem.exceptions.GlobalExceptionHandler;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -22,7 +24,7 @@ public class SecurityConfiguration {
     JWTAuthenticationFilter jwtAuthenticationFilter;
 
     @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+    public SecurityFilterChain securityFilterChain(HttpSecurity http, CustomAuthenticationEntryPoint customAuthenticationEntryPoint) throws Exception {
 
         http.csrf(csrf -> csrf.disable())
                 .headers(x -> x.frameOptions().disable())
@@ -31,8 +33,11 @@ public class SecurityConfiguration {
                         .requestMatchers(HttpMethod.POST, "/auth").permitAll()
                         .requestMatchers(HttpMethod.POST, "/register").permitAll()
                         .requestMatchers(HttpMethod.POST, "/reservations").authenticated()
-                        .anyRequest().permitAll())
-
+                        .requestMatchers(HttpMethod.POST, "/tables").authenticated()
+                        .anyRequest().permitAll()
+                )
+                .exceptionHandling(ex -> ex
+                        .authenticationEntryPoint(customAuthenticationEntryPoint))
 
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
 
