@@ -27,6 +27,6 @@ public class RegisterController {
     public ResponseEntity<ResponseDTO> register(@RequestBody @Valid UserRegistrationDTO data) {
 
         registerService.registerUser(data);
-        return ResponseEntity.ok(new ResponseDTO("User registered successfully"));
+        return ResponseEntity.ok(new ResponseDTO("Usuário registrado com sucesso!"));
     }
 }

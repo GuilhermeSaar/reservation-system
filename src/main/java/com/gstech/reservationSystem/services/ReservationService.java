@@ -4,6 +4,7 @@ import com.gstech.reservationSystem.DTO.CreateReservationDTO;
 import com.gstech.reservationSystem.DTO.ReservationDTO;
 import com.gstech.reservationSystem.enums.ReservationStatus;
 import com.gstech.reservationSystem.enums.TableStatus;
+import com.gstech.reservationSystem.enums.UserRole;
 import com.gstech.reservationSystem.exceptions.*;
 import com.gstech.reservationSystem.orm.Reservation;
 import com.gstech.reservationSystem.repositories.ReservationRepository;
@@ -64,7 +65,7 @@ public class ReservationService {
         LocalTime closingTime = LocalTime.of(22, 0);
 
         if(reservationTime.isBefore(openingTime) || reservationTime.isAfter(closingTime)) {
-            throw new RuntimeException("Reservations are only allowed between 10:00 and 22:00");
+            throw new ActionNotAllowedException("Reservas só são permitidas entre as 10:00 e as 22:00.");
         }
 
         if (data.guestCount() > table.getCapacity()) {
@@ -92,7 +93,7 @@ public class ReservationService {
         var reservation = reservationRepository.findById(reservationId).orElseThrow(
                 () -> new ResourceNotFoundException("Reserva não encontrada"));
 
-        if(!Objects.equals(user.getId(), reservation.getUser().getId())) {
+        if(!Objects.equals(user.getId(), reservation.getUser().getId()) && user.getRole() != UserRole.ADMIN) {
             throw new UserNotAllowedException(
                     "Usuário não está autorizado a desfazer essa reserva");
         }

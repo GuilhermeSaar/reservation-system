@@ -20,7 +20,7 @@ public class RegisterService {
 
         if(userRepository.findByEmail(data.email()).isPresent()) {
 
-            throw new ResourceAlreadyExistsException("Email already exists");
+            throw new ResourceAlreadyExistsException("Email ja está cadastrado");
         }
         String encryptPassword = passwordEncoder.encode(data.password());
         userRepository.save(new User(data, encryptPassword));
