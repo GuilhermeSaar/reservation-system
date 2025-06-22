@@ -1,7 +1,6 @@
 
 # Sistema de Reservas para Restaurante (em desenvolvimento)
 
-⚠️ Aviso: A aplicação foi dockerizada, porém a imagem Docker ainda não foi atualizada após as últimas modificações no código. Será necessário realizar um novo build para refletir as alterações mais recentes.
 
 ## Descrição do Projeto
 
