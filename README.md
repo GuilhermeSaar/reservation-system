@@ -121,7 +121,13 @@ Authorization: Bearer SEU_TOKEN
    docker-compose up --build
    ```
 
-4. A aplicação estará disponível em `http://localhost:8080`
+4. Acesse a aplicação:
+
+Swagger: http://localhost:8080/swagger-ui/index.html
+
+API: http://localhost:8080
+
+
 
 ---
 
